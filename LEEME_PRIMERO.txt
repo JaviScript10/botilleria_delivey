@@ -1,0 +1,118 @@
+# ⚡ INICIO RÁPIDO - Windows
+
+## 🎯 PASOS EXACTOS (5 minutos):
+
+### 1️⃣ Descomprime el ZIP
+
+```
+drinkgo-completo-final.zip
+  └── drinkgo-premium/  ← Esta es la carpeta que necesitas
+       ├── app.py
+       ├── requirements.txt
+       ├── start.bat  ← EL MÁS FÁCIL
+       ├── templates/
+       └── static/
+```
+
+### 2️⃣ MÉTODO FÁCIL - Doble Click
+
+**Simplemente haz doble click en:**
+```
+start.bat
+```
+
+¡ESO ES TODO! Se instalará y ejecutará automáticamente.
+
+---
+
+### 3️⃣ MÉTODO MANUAL (Si start.bat no funciona)
+
+**Paso A - Abre PowerShell en la carpeta:**
+
+1. Abre la carpeta `drinkgo-premium` en el Explorador
+2. En la barra de direcciones, escribe: `powershell`
+3. Presiona Enter
+
+**Paso B - Instala dependencias:**
+
+```powershell
+pip install Flask==3.0.0 Werkzeug==3.0.1 MarkupSafe==2.1.3
+```
+
+**Paso C - Ejecuta:**
+
+```powershell
+python app.py
+```
+
+**Paso D - Abre navegador:**
+
+```
+http://localhost:5000
+```
+
+---
+
+## ❌ SI NO FUNCIONA:
+
+### Error: "python no se reconoce"
+
+**Solución:**
+1. Instala Python desde: https://www.python.org/downloads/
+2. **IMPORTANTE:** Marca ✅ "Add Python to PATH"
+3. Reinicia PowerShell
+4. Intenta de nuevo
+
+### Error: "No such file or directory"
+
+**Causa:** Estás en la carpeta incorrecta
+
+**Solución:**
+```powershell
+# Navega a donde descomprimiste
+cd C:\Users\TU_NOMBRE\Downloads\drinkgo-premium
+
+# Verifica que estés en la carpeta correcta
+dir
+
+# Debes ver: app.py, requirements.txt, templates/, etc.
+```
+
+### Error: "Module not found"
+
+**Solución:**
+```powershell
+pip install Flask Werkzeug MarkupSafe
+```
+
+---
+
+## ✅ CUANDO FUNCIONE:
+
+Verás en PowerShell:
+```
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.X:5000
+Press CTRL+C to quit
+```
+
+**Abre tu navegador:** http://localhost:5000
+
+---
+
+## 🎉 ¡LISTO!
+
+Deberías ver DrinkGo funcionando con:
+- ✅ Catálogo de productos
+- ✅ Carrito de compras
+- ✅ Buscador funcional
+- ✅ Login y registro
+- ✅ Todo responsive
+
+---
+
+## 🆘 ¿Necesitas Ayuda?
+
+WhatsApp: +56979693753
+
+¡A vender! 🍹🚀

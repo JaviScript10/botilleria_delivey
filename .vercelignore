@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.git
+venv/
+*.log
+.DS_Store
+README.md
+GUIA_INICIO.md
+crear_archivos_restantes.py
+start.sh
+start.bat
