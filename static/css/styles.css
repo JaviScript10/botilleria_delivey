@@ -2156,3 +2156,445 @@ select option {
         justify-content: space-between;
     }
 }
+
+/* ========== RUTA 68 BRANDING ========== */
+.logo-image {
+    height: 50px;
+    width: auto;
+    margin-right: 12px;
+}
+
+.logo-text-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.logo-slogan {
+    font-size: 11px;
+    color: #D4AF37;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+/* ========== MENÚ HAMBURGUESA ========== */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+}
+
+@media (max-width: 968px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .nav-right {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 300px;
+        height: calc(100vh - 70px);
+        background: var(--bg-card);
+        border-left: 1px solid var(--border);
+        flex-direction: column;
+        padding: 20px;
+        transition: right 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    .nav-right.active {
+        right: 0;
+    }
+    
+    .search-container {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .nav-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+    
+    .btn-login,
+    .user-btn,
+    .cart-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .user-name-display {
+        display: inline !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .logo-image {
+        height: 40px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .logo-slogan {
+        font-size: 9px;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .nav-right {
+        width: 250px;
+    }
+}
+
+/* ========== WHATSAPP SIMPLE ========== */
+.whatsapp-float-simple {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.whatsapp-float-simple:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+}
+
+@media (max-width: 768px) {
+    .whatsapp-float-simple {
+        width: 50px;
+        height: 50px;
+        font-size: 26px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* Remover WhatsApp antiguo */
+.whatsapp-float,
+.whatsapp-trigger,
+.whatsapp-menu {
+    display: none !important;
+}
+
+/* ========== RECUADROS CON BORDE ========== */
+.modal-content {
+    border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.cart-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.form-section {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* ========== CHECKOUT 2 PASOS ========== */
+.checkout-steps {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+}
+
+.step-indicator.active {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: #D4AF37;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.step-indicator.active .step-number {
+    background: #D4AF37;
+    color: black;
+}
+
+/* ========== CHECKBOX MEJORADO ========== */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(212, 175, 55, 0.05);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.checkbox-container:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.5);
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.checkbox-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* ========== DEPOSITO VIEW ========== */
+.deposito-content {
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.deposito-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.deposito-icon i {
+    font-size: 40px;
+    color: white;
+}
+
+.deposito-details {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px;
+    margin: 25px 0;
+    text-align: left;
+}
+
+.deposito-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.deposito-row:last-child {
+    border-bottom: none;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* ========== PEDIDOS MODAL ========== */
+.pedido-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.pedido-estado {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.pedido-estado.pendiente {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+}
+
+.pedido-estado.en_camino {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196F3;
+}
+
+.pedido-estado.completado {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.pedido-info p {
+    margin-bottom: 8px;
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+.pedido-total {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+    font-size: 18px;
+}
+
+/* ========== CART ITEM PRECIO UNIT ========== */
+.cart-item-unit-price {
+    font-size: 12px;
+    color: var(--text-gray);
+    margin-top: 5px;
+}
+
+/* ========== DELIVERY INFO MEJORADO ========== */
+.delivery-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+.delivery-info i {
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.delivery-info div {
+    flex: 1;
+}
+
+/* ========== RESPONSIVE FOOTER ========== */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .footer-section ul {
+        text-align: center;
+    }
+}
+
+/* ========== RESPONSIVE MODALS ========== */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .payment-methods {
+        flex-direction: column;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-actions button {
+        width: 100%;
+    }
+    
+    .checkout-steps {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* ========== BOTONES RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .categories {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+    }
+    
+    .category-btn {
+        flex-shrink: 0;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+/* ========== LOADING SKELETON ========== */
+.loading-skeleton {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+    border-radius: 16px;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

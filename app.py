@@ -29,12 +29,21 @@ def format_number_filter(value):
 USERS_DB = {}  # {email: {password_hash, rut, nombre, telefono, direccion, comuna, verificado}}
 ORDERS_DB = {}  # {order_id: {user_email, items, total, fecha, estado}}
 
+# Información de la empresa
+EMPRESA_INFO = {
+    'nombre': 'Distribuidora Ruta 68',
+    'slogan': 'Tu ruta al saabor',
+    'logo': 'logo.jpeg',
+    'email': 'contacto@ruta68.cl',
+    'telefono': '+56979693753'
+}
+
 # Configuración de WhatsApp
 WHATSAPP_NUMBERS = [
     {
         'numero': '+56979693753',
         'nombre': 'Soporte Principal',
-        'mensaje_default': 'Hola! Tengo una consulta sobre DrinkGo'
+        'mensaje_default': 'Hola! Tengo una consulta sobre Ruta 68'
     },
     {
         'numero': '+56930053299',
@@ -42,6 +51,14 @@ WHATSAPP_NUMBERS = [
         'mensaje_default': 'Hola! Necesito ayuda con mi pedido'
     }
 ]
+
+# Configuración de seguridad para pagos en efectivo
+EFECTIVO_CONFIG = {
+    'deposito_porcentaje': 50,  # 50% de depósito adelantado
+    'pedidos_minimos': 5,  # Después de 5 pedidos, sin depósito
+    'monto_maximo_primer_pedido': 30000,  # Máximo $30k en primera compra efectivo
+    'validacion_rut_estricta': True
+}
 
 # Configuración Email (SMTP)
 EMAIL_CONFIG = {
@@ -244,6 +261,10 @@ def send_verification_email(email, nombre):
     print(f"Token: {verification_token}")
     return verification_token
 
+def format_number(num):
+    """Formatear número con separador de miles"""
+    return "{:,}".format(int(num)).replace(",", ".")
+
 # ==================== RUTAS ====================
 
 @app.route('/')
@@ -254,6 +275,7 @@ def index():
         user = USERS_DB.get(session['user_email'])
     
     return render_template('index.html',
+                         empresa=EMPRESA_INFO,
                          whatsapp_numbers=WHATSAPP_NUMBERS,
                          zonas_delivery=ZONAS_DELIVERY,
                          user=user)
@@ -326,7 +348,9 @@ def register():
             'comuna': comuna,
             'verificado': False,
             'fecha_registro': datetime.now().isoformat(),
-            'pedidos_completados': 0
+            'pedidos_completados': 0,
+            'pedidos_ids': [],
+            'puede_efectivo_sin_deposito': False
         }
         
         # Enviar email de verificación
@@ -404,8 +428,71 @@ def get_user():
         'telefono': user['telefono'],
         'direccion': user['direccion'],
         'comuna': user['comuna'],
-        'verificado': user['verificado']
+        'verificado': user['verificado'],
+        'pedidos_completados': user['pedidos_completados'],
+        'puede_efectivo_sin_deposito': user.get('puede_efectivo_sin_deposito', False)
     })
+
+@app.route('/api/user/pedidos', methods=['GET'])
+def get_user_pedidos():
+    """Obtener pedidos del usuario"""
+    if 'user_email' not in session:
+        return jsonify({'error': 'No autenticado'}), 401
+    
+    user = USERS_DB.get(session['user_email'])
+    if not user:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+    
+    # Filtrar pedidos del usuario
+    pedidos_usuario = []
+    for orden_id, orden in ORDERS_DB.items():
+        if orden.get('user_email') == session['user_email']:
+            pedidos_usuario.append({
+                'id': orden_id,
+                'fecha': orden['fecha'],
+                'total': orden['total'],
+                'estado': orden['estado'],
+                'items': orden['items'],
+                'direccion': orden['direccion'],
+                'comuna': orden['comuna']
+            })
+    
+    # Ordenar por fecha descendente
+    pedidos_usuario.sort(key=lambda x: x['fecha'], reverse=True)
+    
+    return jsonify(pedidos_usuario)
+
+@app.route('/api/user/update', methods=['POST'])
+def update_user():
+    """Actualizar datos del usuario"""
+    if 'user_email' not in session:
+        return jsonify({'error': 'No autenticado'}), 401
+    
+    try:
+        data = request.get_json()
+        user = USERS_DB.get(session['user_email'])
+        
+        if not user:
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+        
+        # Actualizar campos permitidos
+        if 'telefono' in data:
+            telefono = sanitize_input(data['telefono'])
+            if validate_phone(telefono):
+                user['telefono'] = telefono
+            else:
+                return jsonify({'error': 'Teléfono inválido'}), 400
+        
+        if 'direccion' in data:
+            user['direccion'] = sanitize_input(data['direccion'])
+        
+        if 'comuna' in data:
+            user['comuna'] = sanitize_input(data['comuna'])
+        
+        return jsonify({'success': True, 'message': 'Perfil actualizado'})
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/calcular-envio', methods=['POST'])
 def calcular_envio():
@@ -460,6 +547,7 @@ def crear_orden():
         
         # Observaciones adicionales
         observaciones = sanitize_input(data.get('observaciones', ''))
+        metodo_pago = data.get('metodoPago')
         
         # Validar items
         items = data.get('items', [])
@@ -477,8 +565,27 @@ def crear_orden():
         costo_envio = 0 if envio_gratis else (2990 + zona['recargo'])
         total = subtotal + costo_envio
         
+        # Validación especial para efectivo
+        requiere_deposito = False
+        monto_deposito = 0
+        
+        if metodo_pago == 'efectivo' and 'user_email' in session:
+            user = USERS_DB.get(session['user_email'])
+            pedidos_completados = user.get('pedidos_completados', 0)
+            
+            # Si tiene menos de 5 pedidos, requiere depósito
+            if pedidos_completados < EFECTIVO_CONFIG['pedidos_minimos']:
+                requiere_deposito = True
+                monto_deposito = int(total * EFECTIVO_CONFIG['deposito_porcentaje'] / 100)
+                
+                # Validar monto máximo en primer pedido
+                if pedidos_completados == 0 and total > EFECTIVO_CONFIG['monto_maximo_primer_pedido']:
+                    return jsonify({
+                        'error': f'Primera compra en efectivo limitada a ${format_number(EFECTIVO_CONFIG["monto_maximo_primer_pedido"])}. Usa transferencia o Webpay.'
+                    }), 400
+        
         # Generar ID de orden
-        orden_id = f"DG{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        orden_id = f"R68{datetime.now().strftime('%Y%m%d%H%M%S')}"
         
         # Guardar orden
         ORDERS_DB[orden_id] = {
@@ -494,18 +601,35 @@ def crear_orden():
             'costo_envio': costo_envio,
             'total': total,
             'fecha': datetime.now().isoformat(),
-            'estado': 'pendiente',
-            'metodo_pago': data.get('metodoPago'),
-            'tiempo_entrega': zona['tiempo']
+            'estado': 'pendiente_pago' if requiere_deposito else 'pendiente',
+            'metodo_pago': metodo_pago,
+            'tiempo_entrega': zona['tiempo'],
+            'requiere_deposito': requiere_deposito,
+            'monto_deposito': monto_deposito,
+            'deposito_pagado': False
         }
         
-        return jsonify({
+        # Agregar orden al usuario
+        if 'user_email' in session:
+            user = USERS_DB.get(session['user_email'])
+            if 'pedidos_ids' not in user:
+                user['pedidos_ids'] = []
+            user['pedidos_ids'].append(orden_id)
+        
+        response_data = {
             'success': True,
             'orden_id': orden_id,
             'total': total,
             'tiempo_entrega': zona['tiempo'],
             'mensaje': f'Orden {orden_id} creada exitosamente'
-        }), 201
+        }
+        
+        if requiere_deposito:
+            response_data['requiere_deposito'] = True
+            response_data['monto_deposito'] = monto_deposito
+            response_data['mensaje'] = f'Orden {orden_id} creada. Deposita ${format_number(monto_deposito)} para confirmar.'
+        
+        return jsonify(response_data), 201
         
     except Exception as e:
         print(f"Error: {str(e)}")

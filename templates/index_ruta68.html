@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ empresa.nombre }} - {{ empresa.slogan }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="bg-images"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo" onclick="scrollToTop(); return false;">
+                    <img src="{{ url_for('static', filename='images/' + empresa.logo) }}" alt="{{ empresa.nombre }}" class="logo-image">
+                    <div class="logo-text-container">
+                        <span class="logo-text">{{ empresa.nombre }}</span>
+                        <span class="logo-slogan">{{ empresa.slogan }}</span>
+                    </div>
+                </a>
+                
+                <!-- Menú hamburguesa móvil -->
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-right" id="navRight">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar bebidas...">
+                    </div>
+                    
+                    <div class="nav-actions">
+                        {% if user %}
+                        <div class="user-menu">
+                            <button class="user-btn" id="userMenuBtn">
+                                <i class="fas fa-user"></i>
+                                <span class="user-name-display">{{ user.nombre.split()[0] }}</span>
+                            </button>
+                            <div class="user-dropdown" id="userDropdown">
+                                <a href="#" onclick="verPerfil(); return false;">
+                                    <i class="fas fa-user-circle"></i> Mi Perfil
+                                </a>
+                                <a href="#" onclick="verPedidos(); return false;">
+                                    <i class="fas fa-shopping-bag"></i> Mis Pedidos
+                                </a>
+                                <button onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                </button>
+                            </div>
+                        </div>
+                        {% else %}
+                        <button class="btn-login" onclick="openLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="btn-text">Iniciar Sesión</span>
+                        </button>
+                        {% endif %}
+                        
+                        <button class="cart-btn" id="cartBtn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Delivery Premium de Bebidas Alcohólicas</h1>
+            <p class="hero-subtitle">Las mejores marcas en Valparaíso y Viña en 30-45 minutos</p>
+            <div class="delivery-note">
+                <i class="fas fa-info-circle"></i>
+                <strong>Tiempos de entrega:</strong> Valparaíso y Viña: 30-45 min | Quilpué a Olmué: hasta 120 min
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Banner Promo -->
+        <div class="promo-banner">
+            <i class="fas fa-gift"></i>
+            <strong>¡ENVÍO GRATIS!</strong> En compras sobre $30.000 (Solo Valparaíso y Viña del Mar)
+        </div>
+
+        <!-- WhatsApp Flotante Mejorado -->
+        <a href="https://wa.me/{{ whatsapp_numbers[0].numero.replace('+', '').replace(' ', '') }}?text={{ whatsapp_numbers[0].mensaje_default|urlencode }}" 
+           target="_blank" 
+           class="whatsapp-float-simple">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+
+        <!-- Categorías -->
+        <div class="categories">
+            <button class="category-btn active" data-category="all">
+                <i class="fas fa-th"></i> Todos
+            </button>
+            <button class="category-btn" data-category="promociones">
+                <i class="fas fa-tags"></i> Promociones
+            </button>
+            <button class="category-btn" data-category="whisky">
+                <i class="fas fa-glass-whiskey"></i> Whisky
+            </button>
+            <button class="category-btn" data-category="vodka">
+                <i class="fas fa-martini-glass"></i> Vodka
+            </button>
+            <button class="category-btn" data-category="ron">
+                <i class="fas fa-glass-martini-alt"></i> Ron
+            </button>
+            <button class="category-btn" data-category="cerveza">
+                <i class="fas fa-beer"></i> Cerveza
+            </button>
+            <button class="category-btn" data-category="vino">
+                <i class="fas fa-wine-glass"></i> Vino
+            </button>
+            <button class="category-btn" data-category="pisco">
+                <i class="fas fa-wine-bottle"></i> Pisco
+            </button>
+        </div>
+
+        <!-- Productos -->
+        <div class="products-grid" id="productsGrid">
+            <div class="loading-skeleton"></div>
+        </div>
+    </div>
